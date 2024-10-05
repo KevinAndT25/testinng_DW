@@ -1,7 +1,7 @@
 {
     "name": "Bintang Art",
     "short_name": "Bintang Art",
-    "start_url": "/",
+    "start_url": "index.html",
     "icons": [
         {
             "src": "images/bintangpng-512.png",
