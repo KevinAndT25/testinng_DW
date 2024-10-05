@@ -16,7 +16,7 @@
     ],
     "theme_color": "#000000",
     "background_color": "#FFFFFF",
-    "display": "standalone",
+    "display": "landscape",
     "screenshots": [
         {
             "src": "images/bintangpng-512.png",
