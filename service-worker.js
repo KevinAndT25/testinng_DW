@@ -10,22 +10,36 @@ const cache_assets = [
     'style.css'
 ];
 
-self.addEventListener("install", e => {
+self.addEventListener('install', (e) => {
     e.waitUntil(
-        caches.open(cache_name).then(cache => {
+        caches.open(cache_name).then((cache) => {
             return cache.addAll(cache_assets);
         })
     );
 });
 
-self.addEventListener("activate", e => {
+self.addEventListener('fetch', (e) => {
+    e.respondWith(
+        fetch(event.request).catch(() => {
+            return caches.match(event.request).then((response) => {
+                if (response) {
+                    return response;
+                } else if (event.request.mode === 'navigate') {
+                    return caches.match('offline.html');
+                }
+            });
+        })
+    );
+});
+
+self.addEventListener('activate', (e) => {
     const cacheWhitelist = [cache_name];
     e.waitUntil(
         caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames.map(cachename => {
+                    cacheNames.map(cacheName => {
                             if (!cacheWhitelist.includes(cacheName)) {
-                                return caches.delete(cachename);
+                                return caches.delete(cacheName);
                             }
                         }
                     )
@@ -35,28 +49,3 @@ self.addEventListener("activate", e => {
     );
 });
 
-self.addEventListener("fetch", e => {
-    e.respondWith(
-        fetch(event.request).catch(() => {
-            return caches.match(event.request).then(response => {
-                if (response) {
-                    return response;
-                } else if (event.request.mode === 'navigate') {
-                    return caches.match('offline.html');
-                }
-            });
-        }
-    ));
-});
-        caches.match(e.request).then(response => {
-            if (response) {
-                return response;
-            }
-            return fetch(e.request).catch(
-                () => caches.match('offline.html')
-            );
-
-            
-        })
-    );
-});
