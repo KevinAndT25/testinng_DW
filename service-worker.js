@@ -1,10 +1,13 @@
 const cache_name = 'v1';
 const cache_assets = [
+    '/',
     'index.html',
     'contact.html',
     'about.html',
     'offline.html',
-    './style.css'
+    'javas.js',
+    'manifest.json',
+    'style.css'
 ];
 
 self.addEventListener("install", e => {
