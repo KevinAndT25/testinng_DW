@@ -19,12 +19,13 @@ self.addEventListener("install", e => {
 });
 
 self.addEventListener("activate", e => {
+    const cacheWhitelist = [cache_name];
     e.waitUntil(
         caches.keys().then(cacheNames => {
                 return Promise.all(
-                    cacheNames.map(cache => {
-                            if (cache !== cache_name) {
-                                return caches.delete(cache);
+                    cacheNames.map(cachename => {
+                            if (!cacheWhitelist.includes(cacheName)) {
+                                return caches.delete(cachename);
                             }
                         }
                     )
@@ -36,6 +37,17 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
     e.respondWith(
+        fetch(event.request).catch(() => {
+            return caches.match(event.request).then(response => {
+                if (response) {
+                    return response;
+                } else if (event.request.mode === 'navigate') {
+                    return caches.match('offline.html');
+                }
+            });
+        }
+    ));
+});
         caches.match(e.request).then(response => {
             if (response) {
                 return response;
